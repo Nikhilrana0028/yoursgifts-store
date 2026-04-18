@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Gift Store</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  background: linear-gradient(135deg,#ff9a9e,#fad0c4);
+}
+
+header {
+  background: rgba(0,0,0,0.7);
+  color:#fff;
+  padding:20px;
+  text-align:center;
+}
+
+.container {
+  padding:20px;
+}
+
+.card {
+  background:#fff;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+  margin-bottom:20px;
+}
+
+.product {
+  background:#fff;
+  padding:15px;
+  margin:15px 0;
+  border-radius:15px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  transition:0.3s;
+}
+
+.product:hover {
+  transform: scale(1.03);
+}
+
+.product img {
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+button {
+  padding:10px;
+  background:#ff4d6d;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+button:hover {
+  background:#e63950;
+}
+
+input, textarea {
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+h2 { color:#333; }
+
+</style>
+</head>
+<body>
+
+<header>
+<h1 style="font-size:32px; letter-spacing:2px;">
+<span style="color:#ff4d6d;">Yours</span> 
+<span style="color:#fff;">Gift</span> 
+<span style="color:#ffd166;">Store</span>
+</h1>
+<p style="font-size:14px; opacity:0.8;">✨ Personalized With Love ✨</p>
+<p>Birthday | Anniversary | Valentine's | Mother's Day</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>Add Product</h2>
+<input id="pname" placeholder="Product Name">
+<input id="price" placeholder="Price">
+<textarea id="desc" placeholder="Description"></textarea>
+<input type="file" id="image" accept="image/*">
+<button onclick="addProduct()">Add Product</button>
+</div>
+
+<div class="card">
+<h2>Products</h2>
+<div id="list"></div>
+</div>
+
+<div class="card">
+<h2>Orders</h2>
+<div id="orders"></div>
+</div>
+
+</div>
+
+<script>
+let products = [];
+let orders = [];
+
+function addProduct(){
+ let name = document.getElementById('pname').value;
+ let price = document.getElementById('price').value;
+ let desc = document.getElementById('desc').value;
+ let file = document.getElementById('image').files[0];
+
+ let reader = new FileReader();
+ reader.onload = function(e){
+   let image = e.target.result;
+
+   let product = {name, price, desc, image};
+   products.push(product);
+   showProducts();
+ }
+
+ if(file){ reader.readAsDataURL(file); }
+}
+
+function showProducts(){
+ let list = document.getElementById('list');
+ list.innerHTML = '';
+
+ products.forEach((p, i)=>{
+ list.innerHTML += `
+ <div class="product">
+ <img src="${p.image}" />
+ <h3>${p.name}</h3>
+ <p>${p.desc}</p>
+ <p><b>₹${p.price}</b></p>
+ <input placeholder="Customer Name" id="c${i}">
+ <button onclick="order(${i})">Order</button>
+ </div>`;
+ });
+}
+
+function order(i){
+ let cname = document.getElementById('c'+i).value;
+ let product = products[i];
+
+ if(!cname){
+   alert("Please enter your name");
+   return;
+ }
+
+ let phone = "91XXXXXXXXXX"; // <-- apna WhatsApp number daalo
+ let message = `Hello, I want to order:
+Product: ${product.name}
+Price: ₹${product.price}
+Customer Name: ${cname}`;
+
+ let url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+ window.open(url, '_blank');
+};
+ orders.push(order);
+ showOrders();
+}
+
+function showOrders(){
+ let div = document.getElementById('orders');
+ div.innerHTML = '';
+
+ orders.forEach(o=>{
+ div.innerHTML += `<p>✅ ${o.customer} ordered <b>${o.product}</b></p>`;
+ });
+}
+</script>
+
+</body>
+</html>
