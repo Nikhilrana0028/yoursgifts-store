@@ -19,7 +19,8 @@ header{background:#131921;color:#fff;padding:10px 15px;display:flex;align-items:
 .card img{width:100%;height:180px;object-fit:cover;border-radius:8px;}
 .price{color:#e63946;font-weight:bold;}
 button{width:100%;padding:8px;background:#ff9900;border:none;border-radius:5px;margin-top:8px;cursor:pointer;}
-.whatsapp{position:fixed;bottom:20px;right:20px;background:#25D366;color:#fff;border-radius:50%;width:60px;height:60px;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;}
+.admin{background:#fff;padding:15px;margin:15px;border-radius:10px;}
+input,select,textarea{width:100%;padding:8px;margin:5px 0;border-radius:5px;border:1px solid #ccc;}
 </style>
 </head>
 <body>
@@ -29,7 +30,8 @@ button{width:100%;padding:8px;background:#ff9900;border:none;border-radius:5px;m
 <input type="text" id="search" class="search" placeholder="Search gifts..." onkeyup="showProducts()">
 </header>
 
-<div class="categories" id="categories">
+<!-- CATEGORY BAR -->
+<div class="categories">
 <div class="cat active" onclick="setCategory('All')">All</div>
 <div class="cat" onclick="setCategory('Birthday')">Birthday</div>
 <div class="cat" onclick="setCategory('Anniversary')">Anniversary</div>
@@ -40,33 +42,57 @@ button{width:100%;padding:8px;background:#ff9900;border:none;border-radius:5px;m
 <div class="cat" onclick="setCategory('Doctor')">Doctor</div>
 </div>
 
+<!-- ADMIN PANEL -->
+<div class="admin">
+<h3>Add Product (Direct Gallery Upload)</h3>
+<input id="name" placeholder="Product Name">
+<input id="price" placeholder="Price">
+<textarea id="desc" placeholder="Description"></textarea>
+<select id="category">
+<option value="Birthday">Birthday</option>
+<option value="Anniversary">Anniversary</option>
+<option value="Valentine">Valentine</option>
+<option value="MotherDay">Mother Day</option>
+<option value="FatherDay">Father Day</option>
+<option value="Teacher">Teacher</option>
+<option value="Doctor">Doctor</option>
+</select>
+<input type="file" id="image" accept="image/*">
+<button onclick="addProduct()">Add Product</button>
+</div>
+
 <div class="container">
 <div class="grid" id="productList"></div>
 </div>
 
-<!-- WhatsApp Floating Button -->
-<a class="whatsapp" href="https://wa.me/7669541761" target="_blank">💬</a>
-
 <script>
-let selectedCategory="All";
-
-// 👉 ADMIN: yahan manually products add karo
-let products=[
-{
-name:"Frame Gift",
-price:"499",
-category:"Birthday",
-image:"https://i.ibb.co/jPtLR1fM/frame.jpg"
-}
-{name:"Anniversary Gift",price:"699",category:"Anniversary",image:"https://via.placeholder.com/300"},
-{name:"Doctor Gift",price:"399",category:"Doctor",image:"https://via.placeholder.com/300"}
-];
+let products = JSON.parse(localStorage.getItem('products')) || [];
+let selectedCategory = 'All';
 
 function setCategory(cat){
-selectedCategory=cat;
+selectedCategory = cat;
 document.querySelectorAll('.cat').forEach(c=>c.classList.remove('active'));
 event.target.classList.add('active');
 showProducts();
+}
+
+function addProduct(){
+let name=document.getElementById('name').value;
+let price=document.getElementById('price').value;
+let desc=document.getElementById('desc').value;
+let category=document.getElementById('category').value;
+let file=document.getElementById('image').files[0];
+
+if(!name||!price||!file){alert("Fill all fields");return;}
+
+let reader=new FileReader();
+reader.onload=function(e){
+let image=e.target.result;
+products.push({name,price,desc,category,image});
+localStorage.setItem('products',JSON.stringify(products));
+showProducts();
+}
+reader.readAsDataURL(file);
 }
 
 function showProducts(){
@@ -80,6 +106,7 @@ container.innerHTML+=`
 <div class="card">
 <img src="${p.image}"/>
 <h4>${p.name}</h4>
+<p>${p.desc}</p>
 <p>${p.category}</p>
 <p class="price">₹${p.price}</p>
 <button onclick="order(${i})">Order on WhatsApp</button>
