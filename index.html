@@ -30,9 +30,9 @@ button {padding:10px;background:#ff4d6d;color:#fff;border:none;border-radius:8px
 let products = [
   {
     name: "Birthday Frame",
-    price: "549",
+    price: "499",
     desc: "Custom photo birthday frame",
-    image: https://incrediblegifts.in/wp-content/uploads/2021/02/4-6-768x768.jpg
+    image: "https://via.placeholder.com/300"
   },
   {
     name: "Anniversary Gift",
@@ -60,7 +60,7 @@ function showProducts(){
 
 function order(i){
  let product = products[i];
- let phone = "7669541761"; // apna number daalo
+ let phone = "91XXXXXXXXXX"; // apna number daalo
 
  let message = `Hello, I want to order:\nProduct: ${product.name}\nPrice: ₹${product.price}`;
  let url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
